@@ -8,7 +8,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
-engine = create_engine(DATABASE_URL)#create connection bw fastapi and database
+engine = engine = create_engine( DATABASE_URL, pool_pre_ping=True )
 
 SessionLocal = sessionmaker(#create database session
     autocommit=False,#Changes are not automatically saved
