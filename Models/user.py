@@ -17,7 +17,7 @@ class User(Base):# if we not write base it become normal class with base we tell
     primary_skill = Column(String(100))
     target_company = Column(String(100))
     target_role = Column(String(100))
-
+    resume_filename = Column(String(255), nullable=True)
     # Password-reset fields
     reset_token = Column(String(255), nullable=True)
     reset_token_expiry = Column(DateTime, nullable=True)
