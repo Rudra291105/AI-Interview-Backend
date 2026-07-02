@@ -8,6 +8,13 @@ from Models.user import User
 from schemas.user import UserCreate, UserLogin, TokenResponse, RefreshRequest
 from utils.security import (hash_password,verify_password,hash_refresh_token,verify_refresh_token,create_access_token,create_refresh_token,verify_token,)
 from utils.dependency import get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+
+from utils.dependency import get_current_user
+
+from schemas.user import ProfileUpdate, ProfileResponse
 router = APIRouter()
 
 
@@ -235,3 +242,35 @@ def delete_user(email: str, db: Session = Depends(get_db)):
     return {
         "message": "User deleted successfully"
     }
+
+@router.put("/profile", response_model=ProfileResponse)
+def update_profile(
+    profile: ProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if profile.name is not None:
+        current_user.name = profile.name
+
+    if profile.college is not None:
+        current_user.college = profile.college
+
+    if profile.branch is not None:
+        current_user.branch = profile.branch
+
+    if profile.graduation_year is not None:
+        current_user.graduation_year = profile.graduation_year
+
+    if profile.primary_skill is not None:
+        current_user.primary_skill = profile.primary_skill
+
+    if profile.target_company is not None:
+        current_user.target_company = profile.target_company
+
+    if profile.target_role is not None:
+        current_user.target_role = profile.target_role
+
+    db.commit()
+    db.refresh(current_user)
+
+    return current_user
